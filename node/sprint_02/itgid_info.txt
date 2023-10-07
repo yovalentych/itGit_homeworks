@@ -1,0 +1,18 @@
+ITGID.INFO
+
+site: https://itgid.info
+cabinet: https://cabinet.itgid.info
+
+telegram: https://telegram.me/itgid_admin
+email: support@itgid.info
+
+Courses:
+Node.js 2024 https://itgid.info/ru/course/nodejs-2024/nodejs-2024-sprint-1
+PHP 2023 https://itgid.info/ru/course/php-2023
+React.js https://itgid.info/ru/course/reactjs
+JavaScript 2.0 https://itgid.info/ru/course/js20
+Arrays Method https://itgid.info/ru/course/arraymethod
+JavaScript Function https://itgid.info/ru/course/function-2021
+
+
+
