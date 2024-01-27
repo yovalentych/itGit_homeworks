@@ -1,5 +1,5 @@
-const URL = "https://api.itgid.info";
-const APIKEY = "сюда_напишите_ваш_api_key";
+const URL = 'https://api.itgid.info';
+const APIKEY = '3Ukls16nARnda6m9';
 
 // никаких других изменений, добавлений
 // оптимизаций - в файл config не вносим!!!

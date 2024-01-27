@@ -8,22 +8,20 @@
 // Результат - объект со списком сотрудников. Выведите в out-1 возраст сотрудников через пробел.
 // не забывайте для авторизации отправлять apikey с указанным ключом.
 
+const requestHeaders = new Headers();
+requestHeaders.append('apikey', APIKEY);
+const formData = new FormData();
+
 async function f1() {
-  const out = document.querySelector('.out-1');
-  let ageOut = '';
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
-
-  const res = await fetch(`${URL}/api/26/employee/read`, {
+  const taskURL = '/api/26/employee/read';
+  const response = await fetch(URL + taskURL, {
     method: 'GET',
-    headers: requestHeader,
+    headers: requestHeaders,
   });
-
-  const result = await res.json();
-  for (val of result.result) {
-    ageOut += val.age + ' ';
-  }
-  out.textContent = ageOut;
+  const result = await response.json();
+  document.querySelector('.out-1').textContent = result.result
+    .map((el) => el.age)
+    .join(' ');
 }
 
 document.querySelector('.b-1').addEventListener('click', f1);
@@ -37,19 +35,14 @@ document.querySelector('.b-1').addEventListener('click', f1);
 // Результат - объект с описанием сотрудника. Выведите в out-2 email полученного сотрудника.
 
 async function f2() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
-
-  const idOut = document.querySelector('.i-2').value;
-  const out = document.querySelector('.out-2');
-
-  const res = await fetch(`${URL}/api/26/employee/read?id=${Number(idOut)}`, {
+  const employeeNum = document.querySelector('.i-2').value;
+  const taskURL = `/api/26/employee/read?id=${employeeNum}`;
+  const response = await fetch(URL + taskURL, {
     method: 'GET',
-    headers: requestHeader,
+    headers: requestHeaders,
   });
-
-  const result = await res.json();
-  out.textContent = result.result.age;
+  const result = await response.json();
+  document.querySelector('.out-2').textContent = result.result.email;
 }
 
 document.querySelector('.b-2').onclick = f2;
@@ -63,8 +56,14 @@ document.querySelector('.b-2').onclick = f2;
 // Результат - объект с описанием сотрудника. Выведите в out-3 name полученного сотрудника.
 
 async function f3() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const employeeNum = document.querySelector('.i-3').value;
+  const taskURL = `/api/26/employee/read/${employeeNum}`;
+  const response = await fetch(URL + taskURL, {
+    method: 'POST',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  document.querySelector('.out-3').textContent = result.result.name;
 }
 
 document.querySelector('.b-3').onclick = f3;
@@ -77,8 +76,15 @@ document.querySelector('.b-3').onclick = f3;
 // Результат - объект с описанием рас игры КР. Выведите в out-4 название рас (title) через пробел.
 
 async function f4() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const taskURL = `/api/26/sr/read/`;
+  const response = await fetch(URL + taskURL, {
+    method: 'POST',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  document.querySelector('.out-4').textContent = result.result
+    .map((el) => el.title)
+    .join(' ');
 }
 
 document.querySelector('.b-4').onclick = f4;
@@ -92,8 +98,18 @@ document.querySelector('.b-4').onclick = f4;
 // Результат - объект с описанием указанной расы. Выведите в out-5 описание расы (description). Вывод осуществляйте через innerHTML.
 
 async function f5() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const race = document.querySelector('.s-5').value;
+  const taskURL = `/api/26/sr/read?race=${race}`;
+  const response = await fetch(URL + taskURL, {
+    method: 'GET',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  try {
+    document.querySelector('.out-5').innerHTML = result.result.description;
+  } catch (error) {
+    document.querySelector('.out-5').textContent = `Plese select a race ^_^.`;
+  }
 }
 
 document.querySelector('.b-5').onclick = f5;
@@ -106,8 +122,16 @@ document.querySelector('.b-5').onclick = f5;
 // выведите статус ответа сервера в .out-6-status
 
 async function f6() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const taskURL = `/api/26/run`;
+  const response = await fetch(URL + taskURL, {
+    method: 'GET',
+    headers: requestHeaders,
+  });
+  try {
+    const result = await response.json();
+  } catch (error) {
+    document.querySelector('.out-6-status').textContent = response.status;
+  }
 }
 
 document.querySelector('.b-6').onclick = f6;
@@ -122,8 +146,27 @@ document.querySelector('.b-6').onclick = f6;
 // В начале функции делайте очистку .out-7.
 
 async function f7() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  document.querySelector('.out-7').textContent = '';
+  const race = document.querySelector('.s-7').value;
+  if (race === '') {
+    document.querySelector('.out-7').textContent = 'Select a race.';
+    return;
+  }
+  const taskURL = `/api/26/sr/read/${race}`;
+  const response = await fetch(URL + taskURL, {
+    method: 'POST',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  try {
+    document.querySelector('.out-7').innerHTML = result.result.description;
+    const imageRace = document.createElement('img');
+    imageRace.src = URL + result.result.image;
+    imageRace.alt = result.race;
+    document.querySelector('.out-7').appendChild(imageRace);
+  } catch (error) {
+    document.querySelector('.out-7').textContent = 'Error. Reload the page';
+  }
 }
 
 document.querySelector('.b-7').onclick = f7;
@@ -136,8 +179,13 @@ document.querySelector('.b-7').onclick = f7;
 // выведите в .out-8 данное число.
 
 async function f8() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const taskURL = `/api/26/random/random-number`;
+  const response = await fetch(URL + taskURL, {
+    method: 'GET',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  document.querySelector('.out-8').textContent = result['random-number'];
 }
 
 document.querySelector('.b-8').onclick = f8;
@@ -155,8 +203,13 @@ let min = 400;
 let max = 500;
 
 async function f9() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const taskURL = `/api/26/random/random-number?min=${min}&max=${max}`;
+  const response = await fetch(URL + taskURL, {
+    method: 'GET',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  document.querySelector('.out-9').textContent = result['random-number'];
 }
 
 document.querySelector('.b-9').onclick = f9;
@@ -171,8 +224,16 @@ document.querySelector('.b-9').onclick = f9;
 // выведите число в .out-10
 
 async function f10() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  formData.append('min', min);
+  formData.append('max', max);
+  const taskURL = `/api/26/random/random-number`;
+  const response = await fetch(URL + taskURL, {
+    method: 'POST',
+    headers: requestHeaders,
+    body: formData,
+  });
+  const result = await response.json();
+  document.querySelector('.out-10').textContent = result['random-number'];
 }
 
 document.querySelector('.b-10').onclick = f10;
@@ -187,8 +248,14 @@ document.querySelector('.b-10').onclick = f10;
 // Выведите строку в .out-11
 
 async function f11() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const length = document.querySelector('.i-11').value;
+  const taskURL = `/api/26/random/random-string?length=${length}`;
+  const response = await fetch(URL + taskURL, {
+    method: 'GET',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  document.querySelector('.out-11').textContent = result['random-string'];
 }
 
 document.querySelector('.b-11').onclick = f11;
@@ -203,8 +270,18 @@ document.querySelector('.b-11').onclick = f11;
 // выведите в .out-12 полученный пароль.
 
 async function f12() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const length = document.querySelector('.i-12').value;
+  const symbols = document.querySelector('.ch-12').checked;
+  formData.append('length', length);
+  formData.append('symbols', symbols ? 1 : 0);
+  const taskURL = `/api/26/random/generate-password`;
+  const response = await fetch(URL + taskURL, {
+    method: 'POST',
+    headers: requestHeaders,
+    body: formData,
+  });
+  const result = await response.json();
+  document.querySelector('.out-12').textContent = result.password;
 }
 
 document.querySelector('.b-12').onclick = f12;
@@ -222,8 +299,20 @@ document.querySelector('.b-12').onclick = f12;
 // не забывайте для авторизации отправлять apikey с указанным ключом.
 
 async function f13() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const length = document.querySelector('.i-13').value;
+  const symbols = document.querySelector('.ch-131').checked;
+  const uppercase = document.querySelector('.ch-132').checked;
+  formData.append('length', length);
+  formData.append('symbols', symbols ? 1 : 0);
+  formData.append('uppercase', uppercase ? 1 : 0);
+  const taskURL = `/api/26/random/generate-password`;
+  const response = await fetch(URL + taskURL, {
+    method: 'POST',
+    headers: requestHeaders,
+    body: formData,
+  });
+  const result = await response.json();
+  document.querySelector('.out-13').textContent = result.password;
 }
 
 document.querySelector('.b-13').onclick = f13;
@@ -236,8 +325,15 @@ document.querySelector('.b-13').onclick = f13;
 // выведите в .out-14 title миров через пробел.
 
 async function f14() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const taskURL = `/api/26/gow/world`;
+  const response = await fetch(URL + taskURL, {
+    method: 'GET',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  document.querySelector('.out-14').textContent = result.worlds
+    .map((el) => el.title)
+    .join(' ');
 }
 
 document.querySelector('.b-14').onclick = f14;
@@ -250,8 +346,18 @@ document.querySelector('.b-14').onclick = f14;
 // выведите описание мира (description) в out-15
 
 async function f15() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const world = document.querySelector('.s-15').value;
+  const taskURL = `/api/26/gow/world/${world}`;
+  const response = await fetch(URL + taskURL, {
+    method: 'GET',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  try {
+    document.querySelector('.out-15').textContent = result.world.description;
+  } catch (error) {
+    document.querySelector('.out-15').textContent = `Plese select a world ^_^.`;
+  }
 }
 
 document.querySelector('.b-15').onclick = f15;
@@ -265,8 +371,19 @@ document.querySelector('.b-15').onclick = f15;
 // выведите в .out-16 руну данного мира. Как изображение (createElement). Очищайте out-16 в начале функции.
 
 async function f16() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  document.querySelector('.out-16').innerHTML = '';
+  const governor = document.querySelector('.s-16').value;
+  const taskURL = `/api/26/gow/governor/${governor}`;
+  const response = await fetch(URL + taskURL, {
+    method: 'GET',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  document.querySelector('.out-16').innerHTML = result.world.description;
+  const imageRace = document.createElement('img');
+  imageRace.src = URL + result.world.rune;
+  imageRace.alt = result.governor;
+  document.querySelector('.out-16').appendChild(imageRace);
 }
 
 document.querySelector('.b-16').onclick = f16;
@@ -279,8 +396,15 @@ document.querySelector('.b-16').onclick = f16;
 // выведите в .out-17 время в формате час:минуты
 
 async function f17() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  const taskURL = `/api/26/get-time`;
+  const response = await fetch(URL + taskURL, {
+    method: 'POST',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  document.querySelector(
+    '.out-17'
+  ).innerHTML = `${result.time.h}:${result.time.m}`;
 }
 
 document.querySelector('.b-17').onclick = f17;
@@ -294,8 +418,19 @@ document.querySelector('.b-17').onclick = f17;
 // выполните очистку .out-18 в начале функции
 
 async function f18() {
-  const requestHeader = new Headers();
-  requestHeader.append('apikey', APIKEY);
+  document.querySelector('.out-18').innerHTML = '';
+  const taskURL = `/api/26/gow/rune`;
+  const response = await fetch(URL + taskURL, {
+    method: 'POST',
+    headers: requestHeaders,
+  });
+  const result = await response.json();
+  for (const race in result.rune) {
+    const imageRace = document.createElement('img');
+    imageRace.src = URL + result.rune[race];
+    imageRace.alt = race;
+    document.querySelector('.out-18').appendChild(imageRace);
+  }
 }
 
 document.querySelector('.b-18').onclick = f18;

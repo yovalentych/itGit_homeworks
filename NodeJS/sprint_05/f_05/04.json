@@ -1,0 +1,19 @@
+{"EXPENSE": [
+    {
+      "WHAT": "Beer",
+      "AMOUNT": 18.00
+    },
+    {
+      "WHAT": "Food",
+      "AMOUNT": 12.00
+    },
+    {
+      "WHAT": "Food",
+      "AMOUNT": 19.00
+    },
+    {
+      "WHAT": "Car",
+      "AMOUNT": 20.00
+    }
+  ]
+}

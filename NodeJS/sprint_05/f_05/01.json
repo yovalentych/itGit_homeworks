@@ -1,0 +1,6 @@
+{
+    "app" : "VSCode",
+    "version" : 1.8,
+    "os" : ["w", "m", "l"],
+    "url" : "https://code.visualstudio.com/"
+}
